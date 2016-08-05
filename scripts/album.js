@@ -29,6 +29,21 @@ var albumPicasso = {
      ]
  };
 
+var albumSway = {
+    title: 'Level Up',
+    artist: 'Sway',
+    label: 'Sssh',
+    year: '2012',
+    albumArtUrl: 'assets/images/album_covers/02.png',
+    songs: [
+        { title: 'Still Speeding', duration: '3:47' },
+        { title: 'Jingle Bells', duration: '4:12' },
+        { title: 'Halleluya', duration: '5:02' },
+        { title: 'Hello', duration: '3:23' },
+        { title: "It's me", duration: '3:37'}
+    ]
+};
+
 var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -41,15 +56,15 @@ var createSongRow = function(songNumber, songName, songLength) {
      return template;
  };
 
- var setCurrentAlbum = function(album) {
+var albumTitle = document.getElementsByClassName('album-view-title')[0];
+var albumArtist = document.getElementsByClassName('album-view-artist')[0];
+var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
+var albumImage = document.getElementsByClassName('album-cover-art')[0];
+var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
+
+var setCurrentAlbum = function(album) {
      // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
-     var albumArtist = document.getElementsByClassName('album-view-artist')[0];
-     var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
-     var albumImage = document.getElementsByClassName('album-cover-art')[0];
-     var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
- 
-     // #2
+
      albumTitle.firstChild.nodeValue = album.title;
      albumArtist.firstChild.nodeValue = album.artist;
      albumReleaseInfo.firstChild.nodeValue = album.year + ' ' + album.label;
@@ -66,4 +81,13 @@ var createSongRow = function(songNumber, songName, songLength) {
  
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
+     var index = 1;
+     var albums = [albumPicasso, albumMarconi, albumSway];
+     albumImage.addEventListener("click", function(event) {
+         setCurrentAlbum(albums[index]);
+         index++;
+         if (index == albums.length) {
+             index = 0;
+         }
+     });
  };
