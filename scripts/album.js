@@ -64,15 +64,23 @@ var createSongRow = function(songNumber, songName, songLength) {
      }
  };
 
-var findParentByClassName = function(element, targetClass) {
-    if (element) {
-        var currentParent = element.parentElement;
+var findParentByClassName = function(parent, targetClass) {
+    var currentParent = document.querySelector('.parent');
+    
+    if (parent.querySelector('.child') === null) {
+        var currentParent = parent.parentElement;
         while (currentParent.className != targetClass && currentParent.className !== null) {
-            currentParent = currentParent.parentElement;
-        }
-        return currentParent;
-    }
-};
+         currentParent = currentParent.parentElement;
+    } 
+    return currentParent;  
+ } else {
+     alert("No parent found");
+ }
+ };
+
+    
+
+
 
 var getSongItem = function(element) {
     switch (element.className) {
