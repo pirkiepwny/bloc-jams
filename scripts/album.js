@@ -64,19 +64,37 @@ var createSongRow = function(songNumber, songName, songLength) {
      }
  };
 
+
 var findParentByClassName = function(parent, targetClass) {
     var currentParent = document.querySelector('.parent');
-    
+
     if (parent.querySelector('.child') === null) {
         var currentParent = parent.parentElement;
         while (currentParent.className != targetClass && currentParent.className !== null) {
-         currentParent = currentParent.parentElement;
-    } 
-    return currentParent;  
- } else {
-     alert("No parent found");
- }
- };
+            currentParent = currentParent.parentElement;
+    }
+    return currentParent; 
+} else if (currentParent.className !== targetClass) {
+        alert("No parent found with that class name");
+} else {
+    alert("No parent found");
+}
+};
+
+
+//var findParentByClassName = function(parent, targetClass) {
+//    var currentParent = document.querySelector('.parent');
+    
+//    if (parent.querySelector('.child') === null) {
+//        var currentParent = parent.parentElement;
+//        while (currentParent.className != targetClass && currentParent.className !== null) {
+//         currentParent = currentParent.parentElement;
+//    } 
+//    return currentParent;  
+ //} else {
+//     alert("No parent found");
+ //}
+ //};
 
     
 
@@ -113,7 +131,7 @@ var clickHandler = function(targetElement) {
         currentlyPlayingSong = null;
     } else if (currentlyPlayingSong !== songItem.getAttribute('data-song-number')) {
         var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
-        currentlyPlayingSongElement.innerHTML = currentlyPlayingSongElement.getAtrribute('data-song-number');
+        currentlyPlayingSongElement.innerHTML = currentlyPlayingSong;
         songItem.innerHTML = pauseButtonTemplate;
         currentlyPlayingSong = songItem.getAttribute('data-song-number');
     }
