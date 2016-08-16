@@ -43,26 +43,24 @@ var createSongRow = function(songNumber, songName, songLength) {
     var clickHandler = function() {
     var songNumber = $(this).attr('data-song-number');
         
-    if (currentlyPlayingSong !== null) {
-        // Die Line versteh ich nicht ganz
-        var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
-        currentlyPlayingCell.html(currentlyPlayingSong);
-            
-    }else if (currentlyPlayingSong !== songNumber) {
+    if (currentlyPlayingSong === null) {
         $(this).html(pauseButtonTemplate);
         currentlyPlayingSong = songNumber;
-            
-    }else if (currentlyPlayingSong === songNumber) {
-        $(this).html(playButtonTemplate);
+    } else if (songNumber === currentlyPlayingSong) {
         currentlyPlayingSong = null;
+        currentlyPlayingCell.html(playButtonTemplate);
+    } else if (songNumber !== currentlyPlayingSong) {
+        $(this).html(pauseButtonTemplate);
+        var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
+        currentlyPlayingCell.html(currentlyPlayingSong);
+        currentlyPlayingSong = songNumber;
     }
-    
         
-    };
+};
     
     var onHover = function(event) {
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = songNumberCell.attr('.data-song-number');
+        var songNumber = songNumberCell.attr('data-song-number');
         
         if(songNumber !== currentlyPlayingSong) {
             songNumberCell.html(playButtonTemplate);
@@ -72,7 +70,7 @@ var createSongRow = function(songNumber, songName, songLength) {
     
     var offHover = function(event) {
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = songNumberCell.attr('.data-song-number');
+        var songNumber = songNumberCell.attr('data-song-number');
         
         if(songNumber !== currentlyPlayingSong) {
             songNumberCell.html(songNumber);
