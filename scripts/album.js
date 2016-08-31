@@ -19,12 +19,6 @@ var seek = function(time) {
  }
 }
 
-var seek = function(time) {
-   if (currentSoundFile) {
-       currentSoundFile.setTime(time);
-   }
- }
-
 var setVolume = function(volume) {
   if (currentSoundFile) {
       currentSoundFile.setVolume(volume);
@@ -43,13 +37,18 @@ var playPause = function(songNumber, songRow) {
  if (currentlyPlayingSongNumber !== songNumber) {
     setSong(songNumber);
     currentSoundFile.play();
+    updateSeekBarWhileSongPlays();
+    currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
     songRow.html(pauseButtonTemplate);
-    updatePlayerBarSong();
+    
     var $volumeFill = $('.volume .fill');
     var $volumeThumb = $('.volume .thumb');
     $volumeFill.width(currentVolume + '%');
     $volumeThumb.css({left: currentVolume + '%'});
 
+    $(this).html(pauseButtonTemplate);
+    updatePlayerBarSong();
+   
  } else if (currentlyPlayingSongNumber === songNumber) {
     if (currentSoundFile.isPaused()) {
         songRow.html(pauseButtonTemplate);
@@ -128,6 +127,16 @@ var setCurrentAlbum = function(album) {
 
    }
 };
+
+
+
+
+
+var setCurrentTimeInPlayerBar = function(currentTime) {
+   $('.current-time').text(currentSoundFile.getDuration);
+}
+   
+   
 var updateSeekBarWhileSongPlays = function() {
    if (currentSoundFile) {
       currentSoundFile.bind('timeupdate', function(event) {
@@ -136,6 +145,7 @@ var updateSeekBarWhileSongPlays = function() {
          var $seekBar = $('.seek-control .seek-bar');
 
          updateSeekPercentage($seekBar, seekBarFillRatio);
+         setCurrentTimeInPlayerBar();
      });
  }
 };
@@ -170,23 +180,28 @@ $seekBars.click(function(event) {
 
 $seekBars.find('.thumb').mousedown(function(event) {
 
-    var $seekBar = $(this).parent();
+  var $seekBar = $(this).parent();
 
-    $(document).bind('mousemove.thumb', function(event){
-        var offsetX = event.pageX - $seekBar.offset().left;
-        var barWidth = $seekBar.width();
-        var seekBarFillRatio = offsetX / barWidth;
+  $(document).bind('mousemove.thumb', function(event){
+      var offsetX = event.pageX - $seekBar.offset().left;
+      var barWidth = $seekBar.width();
+      var seekBarFillRatio = offsetX / barWidth;
 
-        if ($seekBar.parent().attr('class') == 'seek-control') {
-            seek(seekBarFillRatio * currentSoundFile.getDuration());   
-        } else {
-            setVolume(seekBarFillRatio);
-        }
+      if ($seekBar.parent().attr('class') == 'seek-control') {
+          seek(seekBarFillRatio * currentSoundFile.getDuration());   
+      } else {
+          setVolume(seekBarFillRatio);
+      }
 
-        updateSeekPercentage($seekBar, seekBarFillRatio);
+      updateSeekPercentage($seekBar, seekBarFillRatio);
+    });
+      $(document).bind('mouseup.thumb', function() {
+      $(document).unbind('mousemove.thumb');
+      $(document).unbind('mouseup.thumb');
     });
   });
 };
+
 var trackIndex = function (album, song) {
   return album.songs.indexOf(song);
 }
