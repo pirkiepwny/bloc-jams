@@ -68,13 +68,13 @@ var createSongRow = function(songNumber, songName, songLength) {
       '<tr class="album-view-song-item">'
     + '  <td class="song-item-number" data-song-number="' + songNumber + '">' + songNumber + '</td>'
     + '  <td class="song-item-title">' + songName + '</td>'
-    + '  <td class="song-item-duration">' + songLength + '</td>'
+    + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
     + '</tr>'
     ;
 var $row = $(template);
 $row.find('.song-item-number').click(clickHandler);
 $row.hover(onHover, offHover);
-return $row;
+return $row
 };  
 
 var clickHandler = function() {
@@ -128,14 +128,29 @@ var setCurrentAlbum = function(album) {
    }
 };
 
+var setTotalTimeInPlayerBar = function(totalTime) {
+  $('.total-time').text(filterTimeCode(totalTime));
+  
+}
 
-
-
+var filterTimeCode = function(timeInSeconds) {
+  //1. string -> number
+  var parsedSeconds = parseFloat(timeInSeconds);
+  //2. get number of minutes
+  var getMinutes = Math.floor(parsedSeconds / 60); 
+  //3. get number of seconds
+  var getSeconds = Math.floor(parsedSeconds % 60);
+  getSeconds = getSeconds < 10 ? "0" + getSeconds : getSeconds;
+  return getMinutes + ":" + getSeconds;
+  
+  setTotalTimeInPlayerBar();
+   
+}
 
 var setCurrentTimeInPlayerBar = function(currentTime) {
-   $('.current-time').text(currentSoundFile.getDuration);
+   $('.current-time').text(filterTimeCode(currentTime));
+    
 }
-   
    
 var updateSeekBarWhileSongPlays = function() {
    if (currentSoundFile) {
@@ -145,7 +160,8 @@ var updateSeekBarWhileSongPlays = function() {
          var $seekBar = $('.seek-control .seek-bar');
 
          updateSeekPercentage($seekBar, seekBarFillRatio);
-         setCurrentTimeInPlayerBar();
+         setCurrentTimeInPlayerBar(this.getTime());
+         setTotalTimeInPlayerBar(this.getDuration());
      });
  }
 };
@@ -220,6 +236,7 @@ var nextSong = function() {
   setSong(currentSongIndex + 1);
   currentSoundFile.play();
   updatePlayerBarSong();
+  updateSeekBarWhileSongPlays();
 
 
   $('.currently-playing .song-name').text(currentSongFromAlbum.title);
@@ -274,6 +291,7 @@ var previousSong = function() {
 
   $previousSongNumberCell.html(pauseButtonTemplate);
   $lastSongNumberCell.html(lastSongNumber);
+  updateSeekBarWhileSongPlays();
   
 };
 
